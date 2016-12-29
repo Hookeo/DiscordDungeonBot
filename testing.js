@@ -17,12 +17,12 @@ fs.readFile('./botdata.json', 'utf8', function readFileCallback(err, data){
     }});
 
 var getRuns = function(message) {
-    var allRuns = "";
+    var allRuns = [];
     if (stored.runs.length > 0) {
         for (var i = 0; i < stored.runs.length; i++) {
-            var formatting = '**'+stored.runs[i].creator+ '** is looking to do **'+stored.runs[i].dung+'** on **'+stored.runs[i].day+'**.\n*Type "/joinrun '
-                +stored.runs[i].creator+' yournamehere" to join this run or "/runinfo '+stored.runs[i].creator+'" to see who\'s signed up!*';
-            allRuns += i<stored.runs.length-1?formatting+'\n\n':formatting;
+            allRuns.push('**'+stored.runs[i].creator+ '** is looking to do **'+stored.runs[i].dung+'** on **'+stored.runs[i].day+'**.');
+            allRuns.push('*Type "/joinrun ' +stored.runs[i].creator+'" to join this run or "/runinfo '+stored.runs[i].creator+'" to see who\'s signed up!*');
+            var pushEmpty = i<stored.runs.length-1?allRuns.push(''):null;
         }
         message.channel.sendMessage(allRuns);
     } else {
