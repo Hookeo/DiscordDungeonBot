@@ -22,7 +22,7 @@ var getRuns = function(message) {
         for (var i = 0; i < stored.runs.length; i++) {
             allRuns.push('**'+stored.runs[i].creator+ '** is looking to do **'+stored.runs[i].dung+'** on **'+stored.runs[i].day+'**.');
             allRuns.push('*Type "/joinrun ' +stored.runs[i].creator+'" to join this run or "/runinfo '+stored.runs[i].creator+'" to see who\'s signed up!*');
-            var pushEmpty = i<stored.runs.length-1?allRuns.push(''):null;
+            if (i<stored.runs.length-1) {allRuns.push('')}
         }
         message.channel.sendMessage(allRuns);
     } else {
