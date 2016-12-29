@@ -12,7 +12,8 @@ We began this project to help out our World of Warcraft guild, Ook for Brains(Da
 ##Credits
  
  Sam Saleh - [Github](https://github.com/greeneggsandspam)
- Ryan Berkley [Github](https://github.com/Hookeo)
+ 
+ Ryan Berkley - [Github](https://github.com/Hookeo)
  
 ##License
  
