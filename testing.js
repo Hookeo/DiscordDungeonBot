@@ -41,6 +41,21 @@ var writeJson = function(data) {
     });
 } ;
 
+var prepJSON = function(cacheData) {
+        fs.readFile('./botdata.json', 'utf8', function readFileCallback(err, data){
+            if (err){
+                //Doesn't exist create it
+                stored.runs.push({creator: cacheData.name, dung: cacheData.dung, day: cacheData.day, group: [[cacheData.name, cacheData.role]]});
+                writeJson(stored);
+            } else {
+                //File exists
+                stored = JSON.parse(data);
+                stored.runs.push({creator: cacheData.name, dung: cacheData.dung, day: cacheData.day, group: [[cacheData.name, cacheData.role]]});
+                writeJson(stored);
+            }});
+
+};
+
 var checkPending = function(name,arr) {
     var exists;
     for (var i=0;i < arr.length;i++){
@@ -52,7 +67,7 @@ var checkPending = function(name,arr) {
     return false;
 };
 
-var createRun = function(message,msgData) {
+var createRun = function(message) {
     var runDetails = {uid: message.author.id,step: 0};
     var pushCache = function() {
         dmCache.push(runDetails);
@@ -68,24 +83,6 @@ var createRun = function(message,msgData) {
     } else {
         pushCache();
     }
-    /*
-     if (msgData.length < 4) {
-     message.channel.sendMessage('Error creating run. Expected format: /createrun "in game name" "dungeon" "day"\nExample: /createrun Audi DHT+3 Sat' );
-     } else {
-     fs.readFile('./botdata.json', 'utf8', function readFileCallback(err, data){
-     if (err){
-     //Doesn't exist create it
-     stored.runs.push({creator: msgData[1], dung: msgData[2], day: msgData[3], group: [msgData[1]]});
-     writeJson(stored);
-     } else {
-     //File exists
-     stored = JSON.parse(data);
-     stored.runs.push({creator: msgData[1], dung: msgData[2], day: msgData[3], group: [msgData[1]]});
-     writeJson(stored);
-     }});
-     message.reply('Created run ' + msgData[2] + ' for '+msgData[3]);
-     }
-     */
 };
 
 var getHelp = function(msg,data) {
@@ -112,6 +109,7 @@ var runAssembler = function(msg,pos) {
     var saveRun = function(save) {
         if (dmCache[pos].step == 5) {
             if (save=='save') {
+                prepJSON(dmCache[pos]);
                 msg.author.sendMessage('Your run has been saved!');
             } else {
                 msg.author.sendMessage('Your run was not saved and has been deleted')
