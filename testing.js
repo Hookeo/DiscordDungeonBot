@@ -1,10 +1,13 @@
-var fs = require('fs');
-var config = require('./config.json');
-var Discord = require('discord.js');
-var bot = new Discord.Client({ autoReconnect: true });
-var stored;
-var dmCache = [];
+'use strict';
 
+const fs = require('fs');
+const config = require('./config.json');
+const Discord = require('discord.js');
+const bot = new Discord.Client({ autoReconnect: true });
+let stored;
+let dmCache = [];
+
+//Check to see if we have json file named botdata.json and load it. If not lets create an object
 fs.readFile('./botdata.json', 'utf8', function readFileCallback(err, data){
     if (err){
         stored = {
@@ -16,22 +19,24 @@ fs.readFile('./botdata.json', 'utf8', function readFileCallback(err, data){
         console.log('JSON file loaded');
     }});
 
-var getRuns = function(message) {
-    var allRuns = [];
+//Find all runs and reply in channel
+function getRuns(message) {
+    let allRuns = [];
     if (stored.runs.length > 0) {
-        for (var i = 0; i < stored.runs.length; i++) {
-            allRuns.push('**'+stored.runs[i].creator+ '** is looking to do **'+stored.runs[i].dung+'** on **'+stored.runs[i].day+'**.');
-            allRuns.push('*Type "/joinrun ' +stored.runs[i].creator+'" to join this run or "/runinfo '+stored.runs[i].creator+'" to see who\'s signed up!*');
+        for (let i = 0; i < stored.runs.length; i++) {
+            allRuns.push(`**${stored.runs[i].creator}** is looking to do **${stored.runs[i].dung}** on **${stored.runs[i].day}**.`);
+            allRuns.push(`*Type "/joinrun ${stored.runs[i].creator}" to join this run or "/runinfo ${stored.runs[i].creator}" to see who's signed up!*`);
             if (i<stored.runs.length-1) {allRuns.push('')}
         }
         message.channel.sendMessage(allRuns);
     } else {
         message.channel.sendMessage('No runs available');
     }
-};
+}
 
-var writeJson = function(data) {
-    var json = JSON.stringify(data);
+//Write data to botdata.json file
+function writeJson(data) {
+    let json = JSON.stringify(data);
     fs.writeFile('botdata.json', json, function(error) {
         if (error) {
             console.error(error.message);
@@ -39,9 +44,10 @@ var writeJson = function(data) {
             console.log("Data saved");
         }
     });
-} ;
+}
 
-var prepJSON = function(cacheData) {
+//Reload botdata.json and enter data from createRun process
+function prepJSON(cacheData) {
         fs.readFile('./botdata.json', 'utf8', function readFileCallback(err, data){
             if (err){
                 //Doesn't exist create it
@@ -54,22 +60,24 @@ var prepJSON = function(cacheData) {
                 writeJson(stored);
             }});
 
-};
+}
 
-var checkPending = function(name,arr) {
-    var exists;
-    for (var i=0;i < arr.length;i++){
+//Did the user already create a run?
+function checkPending(name,arr) {
+    let exists;
+    for (let i=0;i < arr.length;i++){
         exists = arr[i].uid==name;
         if (exists) {
             return [true,i];
         }
     }
     return false;
-};
+}
 
-var createRun = function(message) {
-    var runDetails = {uid: message.author.id,step: 0};
-    var pushCache = function() {
+//Create run process begins
+function createRun(message) {
+    let runDetails = {uid: message.author.id,step: 0};
+    let pushCache = function() {
         dmCache.push(runDetails);
         message.author.sendMessage("So you are looking to start a run, great!");
         runAssembler(message,checkPending(message.author.id,dmCache)[1])
@@ -83,30 +91,26 @@ var createRun = function(message) {
     } else {
         pushCache();
     }
-};
+}
 
-var getHelp = function(msg,data) {
-    var helpData = [];
+//Looking for help but no help to be found
+function getHelp(msg,data) {
+    let helpData = [];
     helpData.push('this');
     helpData.push('is');
     helpData.push("a test");
     msg.author.sendMessage(helpData);
-};
+}
 
-var runAssembler = function(msg,pos) {
-    var cacheWrapup = function(day) {
+//Going to rework. No touchy!
+function runAssembler(msg,pos) {
+    function cacheWrapup(day) {
         if (dmCache[pos].step == 4) {
             dmCache[pos].day = day;
-            return [
-                "You have entered: Name- "+dmCache[pos].name+
-                ", Role- "+dmCache[pos].role+
-                ", Dungeon- "+dmCache[pos].dung+
-                ", Day- "+dmCache[pos].day+
-                ". If this is correct type save, otherwise this run will be deleted"
-            ];
-        }
-    };
-    var saveRun = function(save) {
+            return `You have entered: Name- ${dmCache[pos].name}, Role- ${dmCache[pos].role}, Dungeon- ${dmCache[pos].dung}, Day- ${dmCache[pos].day}. If this is correct type save, otherwise this run will be deleted`;
+            }
+    }
+    function saveRun(save) {
         if (dmCache[pos].step == 5) {
             if (save=='save') {
                 prepJSON(dmCache[pos]);
@@ -116,8 +120,8 @@ var runAssembler = function(msg,pos) {
             }
             dmCache.splice(pos, 1);
         }
-    };
-    var stepper = {
+    }
+    const stepper = {
         0:['What is your in game name?'],
         1:['What role are you? Accepted inputs: Tank,Healer,DPS','name'],
         2:['What dungeon are you looking to do? Example: DHT+3','role'],
@@ -133,17 +137,18 @@ var runAssembler = function(msg,pos) {
         dmCache[pos].step += 1;
     }
 
-};
+}
 
+//Did someone send a message?
 bot.on('message', function(message) {
     if(message.author.username !== bot.user.username) {
         if (message.channel.type == 'dm' && dmCache.length>0) {
-            var cacheInfo = checkPending(message.author.id,dmCache);
+            const cacheInfo = checkPending(message.author.id,dmCache);
             if (cacheInfo[0] && message.content.split(' ')[0].charAt(0) !== '/') {
                 runAssembler(message,cacheInfo[1]);
             }
         }
-        var userInput = message.content.split(' ');
+        const userInput = message.content.split(' ');
         switch (userInput[0]) {
             case '/getruns':
                 getRuns(message);
