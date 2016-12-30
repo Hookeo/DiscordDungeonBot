@@ -107,7 +107,8 @@ function runAssembler(msg,pos) {
     function cacheWrapup(day) {
         if (dmCache[pos].step == 4) {
             dmCache[pos].day = day;
-            return `You have entered: Name- ${dmCache[pos].name}, Role- ${dmCache[pos].role}, Dungeon- ${dmCache[pos].dung}, Day- ${dmCache[pos].day}. If this is correct type save, otherwise this run will be deleted`;
+            return `You have entered: Name- ${dmCache[pos].name}, Role- ${dmCache[pos].role}, Dungeon- ${dmCache[pos].dung},
+             Day- ${dmCache[pos].day}. If this is correct type save, otherwise this run will be deleted`;
             }
     }
     function saveRun(save) {
@@ -158,6 +159,10 @@ bot.on('message', function(message) {
                 break;
             case '/runhelp':
                 getHelp(message,getHelp);
+                break;
+            case '/joinrun':
+                break;
+            case '/deleterun':
                 break;
             default:
                 break;
