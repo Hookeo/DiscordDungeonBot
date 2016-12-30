@@ -144,7 +144,7 @@ bot.on('message', function(message) {
     if(message.author.username !== bot.user.username) {
         if (message.channel.type == 'dm' && dmCache.length>0) {
             const cacheInfo = checkPending(message.author.id,dmCache);
-            if (cacheInfo[0]) {
+            if (cacheInfo[0] && message.content.split(' ')[0].charAt(0) !== '/') {
                 runAssembler(message,cacheInfo[1]);
             }
         }
