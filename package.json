@@ -1,0 +1,25 @@
+{
+  "name": "discorddungeonbot",
+  "version": "0.0.4",
+  "description": "A Discord bot for setting up mythic dungeons runs in WoW Legion",
+  "main": "testing.js",
+  "dependencies": {
+    "discord.js": "^10.0.1",
+    "ffmpeg": "^0.0.4",
+    "opus": "^0.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hookeo/DiscordDungeonBot.git"
+  },
+  "author": "Ryan Berkley and Sam Saleh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hookeo/DiscordDungeonBot/issues"
+  },
+  "homepage": "https://github.com/Hookeo/DiscordDungeonBot#readme"
+}

@@ -176,6 +176,7 @@ bot.on('message', function(message) {
                 break;
             case '/viewrun':
                 findRun(userInput[1], message);
+                break;
             default:
                 break;
         }
