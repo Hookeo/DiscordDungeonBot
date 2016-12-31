@@ -34,6 +34,28 @@ function getRuns(message) {
     }
 }
 
+function findRun(userInput, message){
+    function finder(run) {
+        return run.creator == userInput;
+    }
+    if (stored.runs.length > 0) {
+        let getRun = stored.runs.find(finder);
+        let replyData = []; //empty array to get our wanted data
+
+        if (getRun) {
+            for(let i = 0; i < getRun.group.length; i++) {
+                console.log(i);
+                replyData.push(`**${getRun.group[i][0]}** - **${getRun.group[i][1]}**`);
+                if (i<getRun.length-1) {replyData.push('')}
+            }
+            message.channel.sendMessage(replyData);
+        }
+        else {
+            message.channel.sendMessage('Group could not be found.');
+        }
+    }
+}
+
 //Write data to botdata.json file
 function writeJson(data) {
     let json = JSON.stringify(data);
@@ -152,6 +174,8 @@ bot.on('message', function(message) {
             case '/runhelp':
                 getHelp(message,getHelp);
                 break;
+            case '/viewrun':
+                findRun(userInput[1], message);
             default:
                 break;
         }
