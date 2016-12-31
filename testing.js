@@ -34,6 +34,19 @@ function getRuns(message) {
     }
 }
 
+function findRun(userInput){
+
+    function finder(run) {
+        return run.creator == userInput;
+    }
+    if (stored.runs.length > 0) {
+        for (let i = 0; i < stored.runs.length; i++) {
+            let run;
+            run.push()
+        }
+    }
+}
+
 //Write data to botdata.json file
 function writeJson(data) {
     let json = JSON.stringify(data);
@@ -58,8 +71,8 @@ function prepJSON(cacheData) {
                 stored = JSON.parse(data);
                 stored.runs.push({creator: cacheData.name, dung: cacheData.dung, day: cacheData.day, group: [[cacheData.name, cacheData.role]]});
                 writeJson(stored);
-            }});
-
+            }
+        });
 }
 
 //Did the user already create a run?
@@ -163,6 +176,9 @@ bot.on('message', function(message) {
             case '/joinrun':
                 break;
             case '/deleterun':
+                break;
+            case '/viewrun':
+                findRun(userInput[1]);
                 break;
             default:
                 break;
