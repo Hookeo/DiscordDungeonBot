@@ -102,41 +102,34 @@ function getHelp(msg,data) {
     msg.author.sendMessage(helpData);
 }
 
-//Going to rework. No touchy!
+//Run constructor
 function runAssembler(msg,pos) {
-    function cacheWrapup(day) {
-        if (dmCache[pos].step == 4) {
-            dmCache[pos].day = day;
-            return `You have entered: Name- ${dmCache[pos].name}, Role- ${dmCache[pos].role}, Dungeon- ${dmCache[pos].dung}, Day- ${dmCache[pos].day}. If this is correct type save, otherwise this run will be deleted`;
-            }
-    }
-    function saveRun(save) {
-        if (dmCache[pos].step == 5) {
-            if (save=='save') {
-                prepJSON(dmCache[pos]);
-                msg.author.sendMessage('Your run has been saved!');
-            } else {
-                msg.author.sendMessage('Your run was not saved and has been deleted')
-            }
-            dmCache.splice(pos, 1);
-        }
-    }
     const stepper = {
-        0:['What is your in game name?'],
-        1:['What role are you? Accepted inputs: Tank,Healer,DPS','name'],
-        2:['What dungeon are you looking to do? Example: DHT+3','role'],
-        3:['What day do you want to do this? Example: Sun,Mon,Tues,Wed...etc','dung'],
-        4:[cacheWrapup(msg.content.split(' ')[0])],
-        5:[saveRun(msg.content.split(' ')[0])]
+        0:[() => 'What is your in game name?'],
+        1:[() => 'What role are you? Accepted inputs: Tank/Healer/DPS','name'],
+        2:[() => 'What dungeon are you looking to do? Example: DHT+3','role'],
+        3:[() => 'What day do you want to do this? Example: Sun,Mon,Tues,Wed...etc','dung'],
+        4:[() => {
+            dmCache[pos].day = msg.content.split(' ')[0];
+            return `You have the following. Name: **${dmCache[pos].name}**, Role: **${dmCache[pos].role}**, Dungeon: **${dmCache[pos].dung}**, Day: **${dmCache[pos].day}**.\nIf this is correct type save, otherwise this run will be deleted`;
+
+        }],
+        5:[() => {
+            if (msg.content.split(' ')[0] == 'save') {
+                prepJSON(dmCache[pos]);
+                return 'Your run has been saved!';
+            } else {
+                return 'Your run was not saved and has been deleted';
+            }
+        }]
     };
     if (dmCache[pos]) {
         if (dmCache[pos].step > 0) {
             dmCache[pos][stepper[dmCache[pos].step][1]] = msg.content.split(' ')[0];
         }
-        msg.author.sendMessage(stepper[dmCache[pos].step][0]);
-        dmCache[pos].step += 1;
+        msg.author.sendMessage(stepper[dmCache[pos].step][0]());
+        dmCache[pos].step<5?dmCache[pos].step += 1:dmCache.splice(pos, 1);
     }
-
 }
 
 //Did someone send a message?
