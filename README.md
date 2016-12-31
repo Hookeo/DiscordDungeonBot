@@ -2,6 +2,11 @@
 
 This is a discord bot that allows users to create, sign up, view, or delete Mythic + Dungeon runs.
 
+##Installation
+ Clone or download a copy.
+ CD to your new directory.
+ Type 'npm install' to install the project dependencies.
+
 ##Motivation
 
 We began this project to help out our World of Warcraft guild, Ook for Brains(Dalaran).  We wanted to create an easier way to organize Mythic + Dungeon's.  Like most guilds, members asked
