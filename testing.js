@@ -43,8 +43,8 @@ function findRun(userInput, message){
         let replyData = []; //empty array to get our wanted data
 
         if (getRun) {
+            replyData.push(`The following roles have been filled for this run:`);
             for(let i = 0; i < getRun.group.length; i++) {
-                console.log(i);
                 replyData.push(`**${getRun.group[i][0]}** - **${getRun.group[i][1]}**`);
                 if (i<getRun.length-1) {replyData.push('')}
             }
@@ -116,11 +116,19 @@ function createRun(message) {
 }
 
 //Looking for help but no help to be found
-function getHelp(msg,data) {
+function getHelp(msg) {
     let helpData = [];
-    helpData.push('this');
-    helpData.push('is');
-    helpData.push("a test");
+    helpData.push(`**Commands List:**`);
+    helpData.push(``);
+    helpData.push(`**/startrun**`);
+    helpData.push(`*Type this command to start a new Mythic run.  It will send you a personal message with more instructions.*`);
+    helpData.push(``);
+    helpData.push(`**/getruns**`);
+    helpData.push(`*Type this command to view all available runs.*`);
+    helpData.push(``);
+    helpData.push(`**/runinfo**`);
+    helpData.push(`*Type this command, followed by the owners name.  This will show you the available positions, and who has already signed up.*`);
+    helpData.push(``);
     msg.author.sendMessage(helpData);
 }
 
@@ -171,10 +179,10 @@ bot.on('message', function(message) {
             case '/startrun':
                 createRun(message,userInput);
                 break;
-            case '/runhelp':
+            case '/help':
                 getHelp(message,getHelp);
                 break;
-            case '/viewrun':
+            case '/runinfo':
                 findRun(userInput[1], message);
                 break;
             default:
